@@ -2,7 +2,7 @@ settings.py
 _management
 userfiles
 static/uploads
-.log
+*.log
 
 *.py[cod]
 
