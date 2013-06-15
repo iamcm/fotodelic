@@ -196,7 +196,7 @@ def index(key):
             u.password = p
             u.save(True)
 
-            return bottle.template('reset_password_success', vd=viewdata)
+            return bottle.redirect('/reset-password-success')
 
         else:
             viewdata['error'] = 'Invalid key'
@@ -207,6 +207,15 @@ def index(key):
 
     return bottle.template('reset_password', vd=viewdata)
 
+
+
+@bottle.route('/reset-password-success', method='GET')
+@ForceHTTP
+def index():
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+
+    return bottle.template('reset_password_success', vd=viewdata)
 
 
 @bottle.route('/logout', method='GET')

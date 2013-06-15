@@ -22,7 +22,7 @@ class Email:
                 s = smtplib.SMTP(self.host)
                 if settings.EMAILUSERNAME and settings.EMAILPASSWORD:
                     s.login(settings.EMAILUSERNAME, settings.EMAILPASSWORD)
-                s.sendmail(self.sender, self.recipient, msg.as_string())
+                s.sendmail(self.sender, r, msg.as_string())
             except:
                 Logger.log_to_file(msg.as_string())
         
