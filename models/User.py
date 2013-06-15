@@ -25,6 +25,7 @@ class User(BaseModel):
             ('token', ''),
             ('salt', ''),
             ('valid', False),
+            ('passwordresetkey', None),
             ('facebookuserId', None),
             ('added', datetime.datetime.now()),
         ]

@@ -18,6 +18,12 @@ from PIL import Image as PILImage
 def randomfilename():
    return str( random.randint(1000, 1000000) ) 
 
+def password_reset_key():
+    import md5
+    m = md5.new()
+    m.update(randomfilename())
+    return m.hexdigest()
+
 def checklogin(callback):
     def wrapper(*args, **kwargs):
         if bottle.request.get_cookie('token') or bottle.request.GET.get('token'):
@@ -110,6 +116,97 @@ def index():
     viewdata['error'] = 'Login failed'
 
     return bottle.template('login', vd=viewdata)
+
+
+
+@bottle.route('/forgotten-password', method='GET')
+@ForceHTTPS
+def index():
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+
+    return bottle.template('forgotten_password', vd=viewdata)
+
+
+
+@bottle.route('/forgotten-password', method='POST')
+@ForceHTTPS
+def index():
+    e = bottle.request.POST.get('email')
+
+    if e:
+        users = EntityManager(_DBCON).get_all(User, filter_criteria={'email':e})
+        if len(users)==1:
+            u = users[0]
+            u.passwordresetkey = password_reset_key()
+            u.save()
+
+            e = Email(recipients=[e])
+            body = 'You have requested to reset your password for www.fotodelic.co.uk, please follow this link to reset it:\n\r\n https://%s/reset-password/%s' % (bottle.request.environ['HTTP_HOST'], u.passwordresetkey)
+            e.send('Fotodelic - password reset request', body)               
+
+            return bottle.redirect('/forgotten-password-sent')
+
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+    viewdata['error'] = 'No matching user account found'
+
+    return bottle.template('forgotten_password', vd=viewdata)
+
+
+
+@bottle.route('/forgotten-password-sent', method='GET')
+@ForceHTTP
+def index():
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+
+    return bottle.template('forgotten_password_sent', vd=viewdata)
+
+
+
+@bottle.route('/reset-password/:key', method='GET')
+@ForceHTTPS
+def index(key):
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+    viewdata['key'] = key
+
+    return bottle.template('reset_password', vd=viewdata)
+
+
+
+@bottle.route('/reset-password/:key', method='POST')
+@ForceHTTPS
+def index(key):
+    k = bottle.request.POST.get('key')
+    p = bottle.request.POST.get('password')
+    p2 = bottle.request.POST.get('password2')
+    error = None
+    
+    viewdata = commonViewData()
+    viewdata['cats'] = None
+    viewdata['key'] = key
+
+    if (p and p2) and (p==p2):
+        users = EntityManager(_DBCON).get_all(User, filter_criteria={'passwordresetkey':k})
+        if len(users)==1:
+            u = users[0]
+            u.passwordresetkey=None
+            u.password = p
+            u.save(True)
+
+            return bottle.template('reset_password_success', vd=viewdata)
+
+        else:
+            viewdata['error'] = 'Invalid key'
+
+    else:
+        viewdata['error'] = 'Please enter two matching passwords'
+
+
+    return bottle.template('reset_password', vd=viewdata)
+
 
 
 @bottle.route('/logout', method='GET')
@@ -237,7 +334,7 @@ def index(slug, imageId):
 
 
         e = Email()
-        body = 'A comment has been added to fotodelic.co.uk:\n\r\n %s/gallery/%s/%s' % (bottle.request.environ['HTTP_HOST'], slug, imageId)
+        body = 'A comment has been added to fotodelic.co.uk:\n\r\n http://%s/gallery/%s/%s' % (bottle.request.environ['HTTP_HOST'], slug, imageId)
         e.send('Fotodelic - comment added', body)               
 
         return bottle.redirect(bottle.request.environ['HTTP_REFERER'])

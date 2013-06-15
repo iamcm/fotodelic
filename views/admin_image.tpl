@@ -8,7 +8,7 @@
     </div>
     %end
 
-    <form class="form-horizontal" method='POST' action="/admin/image">
+    <form autocomplete="off" class="form-horizontal" method='POST' action="/admin/image">
 
         <div class="control-group">
             <label class="control-label" for="name">Category</label>

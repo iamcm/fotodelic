@@ -11,7 +11,7 @@
     </div>
     %end
 
-    <form class="form-horizontal" id="loginForm" method='POST' action="/login" >
+    <form autocomplete="off" class="form-horizontal" id="loginForm" method='POST' action="/login" >
         
         <div class="control-group">
             <label class="control-label" for="email">Email</label>

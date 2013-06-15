@@ -8,7 +8,7 @@
     </div>
     %end
 
-    <form class="form-horizontal" method='POST' action="/admin/category">
+    <form autocomplete="off" class="form-horizontal" method='POST' action="/admin/category">
 		
 	    %if vd.get('cat'):
 	    	<input type="hidden" name="id" value="{{vd['cat']._id}}" />

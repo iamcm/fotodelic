@@ -8,7 +8,7 @@
 	</span>
 </div>
 
-<form id="imagefilterform" class="form-inline">
+<form autocomplete="off" id="imagefilterform" class="form-inline">
 
 	<label for="id_category" id="id_category_label">Filter for:</label>
 	<select name="category" id="id_category">

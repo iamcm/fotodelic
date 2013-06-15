@@ -21,7 +21,7 @@
     
     <hr />
     
-    <form class="form-horizontal" method='POST' action="/gallery/{{vd['slug']}}/{{vd['image']._id}}/comment">
+    <form autocomplete="off" class="form-horizontal" method='POST' action="/gallery/{{vd['slug']}}/{{vd['image']._id}}/comment">
 
         <div class="control-group">
             <label class="control-label" for="name">Name</label>
