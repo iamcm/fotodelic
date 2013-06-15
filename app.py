@@ -45,6 +45,24 @@ def JSONResponse(callback):
     return wrapper
 
 
+def ForceHTTP(callback):
+    def wrapper(*args, **kwargs):
+        if bottle.request.environ.get('wsgi.url_scheme') != 'http':
+            return bottle.redirect(bottle.request.url.replace('https://','http://'))
+
+        return callback(*args, **kwargs)
+    return wrapper
+
+def ForceHTTPS(callback):
+    def wrapper(*args, **kwargs):
+        if bottle.request.environ.get('wsgi.url_scheme') != 'https':
+            return bottle.redirect(bottle.request.url.replace('http://','https://'))
+
+        return callback(*args, **kwargs)
+    return wrapper
+
+
+
 # static files
 if settings.PROVIDE_STATIC_FILES:
     @bottle.route('/static/<filepath:path>')
@@ -56,6 +74,7 @@ if settings.PROVIDE_STATIC_FILES:
 
 # auth
 @bottle.route('/login', method='GET')
+@ForceHTTPS
 def index():
     viewdata = commonViewData()
     viewdata['cats'] = None
@@ -63,7 +82,7 @@ def index():
     return bottle.template('login', vd=viewdata)
 
 
-
+@ForceHTTPS
 @bottle.route('/login', method='POST')
 def index():
     e = bottle.request.POST.get('email')
@@ -122,6 +141,7 @@ def commonViewDataAdmin():
 
 
 @bottle.route('/')
+@ForceHTTP
 def index():
 
     images = EntityManager(_DBCON).get_all(Image, filter_criteria={'isHomepagePic':True})
@@ -137,6 +157,7 @@ def index():
 
 
 @bottle.route('/gallery/:slug')
+@ForceHTTP
 def index(slug):
     cats = EntityManager(_DBCON).get_all(Category, filter_criteria={'slug':slug})
 
@@ -156,6 +177,7 @@ def index(slug):
 
 
 @bottle.route('/gallery/:slug/:imageId')
+@ForceHTTP
 def index(slug, imageId):
     cats = EntityManager(_DBCON).get_all(Category, filter_criteria={'slug':slug})
 
@@ -200,6 +222,7 @@ def index(slug, imageId):
 
 
 @bottle.route('/gallery/:slug/:imageId/comment', method='POST')
+@ForceHTTP
 def index(slug, imageId):
     n = bottle.request.POST.get('name') or 'Anonymous'
     c = bottle.request.POST.get('comment')
@@ -225,6 +248,7 @@ def index(slug, imageId):
 
 @bottle.route('/admin')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
 
@@ -234,6 +258,7 @@ def index():
 
 @bottle.route('/admin/category', method='GET')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
 
@@ -243,6 +268,7 @@ def index():
 
 @bottle.route('/admin/category/:id/edit', method='GET')
 @checklogin
+@ForceHTTP
 def index(id):
     viewdata = commonViewDataAdmin()
     viewdata['cat'] = Category(_DBCON, _id=id)
@@ -253,6 +279,7 @@ def index(id):
 
 @bottle.route('/admin/category/:id/delete', method='GET')
 @checklogin
+@ForceHTTP
 def index(id):
     EntityManager(_DBCON).delete_one('Category', id)
 
@@ -262,6 +289,7 @@ def index(id):
 
 @bottle.route('/admin/category', method='POST')
 @checklogin
+@ForceHTTP
 def index():
 
     n = bottle.request.POST.name
@@ -283,6 +311,7 @@ def index():
 
 @bottle.route('/admin/comment/:id/delete', method='GET')
 @checklogin
+@ForceHTTP
 def index(id):
     EntityManager(_DBCON).delete_one('Comment', id)
 
@@ -292,6 +321,7 @@ def index(id):
 
 @bottle.route('/admin/comments')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
     viewdata['comments'] = EntityManager(_DBCON).get_all(Comment, sort_by=[('added',-1)])
@@ -305,6 +335,7 @@ def index():
 
 @bottle.route('/admin/homepage-text', method='GET')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
 
@@ -316,6 +347,7 @@ def index():
 
 @bottle.route('/admin/homepage-text', method='POST')
 @checklogin
+@ForceHTTP
 def index():
     homepagecontent = EntityManager(_DBCON).get_all(HomePageContent)[0]
     homepagecontent.content = bottle.request.POST.content
@@ -327,6 +359,7 @@ def index():
 
 @bottle.route('/admin/image', method='GET')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
     viewdata['cats'] = EntityManager(_DBCON).get_all(Category, sort_by=[('name',1)])
@@ -337,6 +370,7 @@ def index():
 
 @bottle.route('/admin/image', method='POST')
 @checklogin
+@ForceHTTP
 def index():
     uploadedFile = bottle.request.files.get('file')
     nicename, ext = os.path.splitext(uploadedFile.filename)
@@ -367,6 +401,7 @@ def index():
 
 @bottle.route('/admin/images')
 @checklogin
+@ForceHTTP
 def index():
     viewdata = commonViewDataAdmin()
     viewdata['cats'] = EntityManager(_DBCON).get_all(Category, sort_by=[('name',1)])
@@ -393,6 +428,7 @@ def index():
 
 @bottle.route('/admin/image/:id/toggle-homepage/:bool')
 @checklogin
+@ForceHTTP
 def index(id, bool):
     i = Image(_DBCON, _id=id)
     i.isHomepagePic = bool == '1'
@@ -404,6 +440,7 @@ def index(id, bool):
 
 @bottle.route('/admin/image/:id/delete')
 @checklogin
+@ForceHTTP
 def index(id):
     i = Image(_DBCON, _id=id)
 

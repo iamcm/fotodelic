@@ -3,6 +3,7 @@ _management
 userfiles
 static/uploads
 *.log
+*.pid
 
 *.py[cod]
 
