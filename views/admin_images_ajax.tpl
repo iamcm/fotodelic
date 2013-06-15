@@ -1,0 +1,1 @@
+admin_images_ajax.tpl

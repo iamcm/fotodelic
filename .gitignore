@@ -1,3 +1,9 @@
+mysettings.py
+_management
+userfiles
+static/uploads
+.log
+
 *.py[cod]
 
 # C extensions
