@@ -47,15 +47,16 @@ def JSONResponse(callback):
 
 def ForceHTTP(callback):
     def wrapper(*args, **kwargs):
-        if bottle.request.environ.get('wsgi.url_scheme') != 'http':
+        if bottle.request.environ.get('HTTP_HTTPS') == 'on':
             return bottle.redirect(bottle.request.url.replace('https://','http://'))
 
         return callback(*args, **kwargs)
     return wrapper
 
+
 def ForceHTTPS(callback):
     def wrapper(*args, **kwargs):
-        if bottle.request.environ.get('wsgi.url_scheme') != 'https':
+        if bottle.request.environ.get('HTTP_HTTPS') == 'off':
             return bottle.redirect(bottle.request.url.replace('http://','https://'))
 
         return callback(*args, **kwargs)
