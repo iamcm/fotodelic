@@ -74,15 +74,19 @@ p
     position:relative;
     height:85px;
 	padding:10px 0;
+	z-index: 10;
 }
 
 .maincontent
 {
+	z-index: 10;
     min-height:460px;
+    position: relative;
 }
 
 .footer
 {
+	z-index: 10;
 	position:relative;
 	clear:both;
 	border-top:1px solid #D8D8D8;
@@ -367,6 +371,14 @@ a:hover
 #id_filenameQueue
 {
 	margin-left:160px;
+}
+
+#slideshowholder
+{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	z-index: 1;
 }
 
 #slideshowholder img

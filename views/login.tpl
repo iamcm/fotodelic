@@ -37,4 +37,9 @@
     </form>
 </div>
 
-%rebase base_public vd=vd
+%def css():
+    <link rel="stylesheet" href="/static/css/global.css?{{vd['CACHEBREAKER']}}" />
+%end
+
+
+%rebase base_public vd=vd, css=css
