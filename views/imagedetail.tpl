@@ -9,11 +9,11 @@
                 
                 <span class="right mypagination">
                     %if vd['previous']:
-                    <a class="p10" href="/gallery/{{vd['slug']}}/{{vd['previous']}}">&lt;Previous</a>
+                    <a class="p10 btn btn-default" href="/gallery/{{vd['slug']}}/{{vd['previous']}}">Previous</a>
                     %end
                     
                     %if vd['next']:
-                    <a class="p10" href="/gallery/{{vd['slug']}}/{{vd['next']}}">Next&gt;</a>
+                    <a class="p10 btn btn-default" href="/gallery/{{vd['slug']}}/{{vd['next']}}">Next</a>
                     %end
                 </span>
                 <div class="clear"></div>

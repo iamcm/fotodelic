@@ -14,7 +14,6 @@ var Slideshow = {
 		this.lenPics = this.arrEls.length;
 		this.activePic = Math.floor(Math.random() * (this.lenPics - 1 + 1)) + 1;
 
-
 		this.startTimer();
 	},
 	

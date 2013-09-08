@@ -276,6 +276,7 @@ def index(slug):
         viewdata.update({
                 'images':images,
                 'slug':slug,
+                'category':cat.name,
             })
 
         return bottle.template('gallery', vd=viewdata)
