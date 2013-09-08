@@ -4,9 +4,6 @@
     <div class="row">
         <div class="image-detail">
             <div>
-                <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>
-                <fb:like href="?" layout="standard" show_faces="false" font="arial"></fb:like>
-                
                 <span class="right mypagination">
                     %if vd['previous']:
                     <a class="p10 btn btn-default" href="/gallery/{{vd['slug']}}/{{vd['previous']}}">Previous</a>
