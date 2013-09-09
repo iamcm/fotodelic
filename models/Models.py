@@ -8,6 +8,7 @@ class Category(BaseModel):
         self.fields = [
             ('name', None),
             ('slug', None),
+            ('description', None),
             ('added', datetime.datetime.now()),
             ('oldId', None),            
         ]
@@ -21,6 +22,7 @@ class Category(BaseModel):
 class Image(BaseModel):    
     def __init__(self, _DBCON, _id=None):
         self.fields = [
+            ('description', None),
             ('filepath', None),
             ('nicename', None),
             ('isHomepagePic', False),
@@ -46,10 +48,11 @@ class Comment(BaseModel):
  #       return Util.niceDate(d)
         return Util.niceDate(self.added)
 
-class HomePageContent(BaseModel):    
+class EditableContent(BaseModel):    
     def __init__(self, _DBCON, _id=None):
         self.fields = [
             ('content', None),
+            ('identifier', None),
             ('added', datetime.datetime.now()),
         ]
         super(self.__class__, self).__init__(_DBCON, _id)

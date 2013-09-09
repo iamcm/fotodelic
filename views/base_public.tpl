@@ -25,7 +25,7 @@
 
   <body>
 
-    <div class="navbar navbar-inverse">
+    <div class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -34,7 +34,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="/">
-                    www.<span class="white">Fotodelic</span>.co.uk
+                    <span class="greyout">www.</span>fotodelic<span class="greyout">.co.uk</span>
                 </a>
             </div>
             <div class="collapse navbar-collapse">

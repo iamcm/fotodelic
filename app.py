@@ -252,7 +252,7 @@ def commonViewDataAdmin():
 def index():
 
     images = EntityManager(_DBCON).get_all(Image, filter_criteria={'isHomepagePic':True})
-    text = EntityManager(_DBCON).get_all(HomePageContent)[0].content
+    text = EntityManager(_DBCON).get_all(EditableContent, filter_criteria={'identifier':'homepage-content-box'})[0].content
 
     viewdata = commonViewData()
     viewdata.update({
@@ -276,7 +276,7 @@ def index(slug):
         viewdata.update({
                 'images':images,
                 'slug':slug,
-                'category':cat.name,
+                'category':cat,
             })
 
         return bottle.template('gallery', vd=viewdata)
@@ -364,6 +364,18 @@ def index():
 
 
 
+@bottle.route('/admin/categories', method='GET')
+@checklogin
+@ForceHTTP
+def index():
+    viewdata = commonViewDataAdmin()
+
+    viewdata['cats'] = EntityManager(_DBCON).get_all(Category, sort_by=[('name',1)])
+
+    return bottle.template('admin_categories', vd=viewdata)
+
+
+
 @bottle.route('/admin/category', method='GET')
 @checklogin
 @ForceHTTP
@@ -401,10 +413,12 @@ def index(id):
 def index():
 
     n = bottle.request.POST.name
+    d = bottle.request.POST.description
 
     if n:
         cat = Category(_DBCON, _id=bottle.request.POST.id)
         cat.name = n
+        cat.description = d
         cat.save()
 
         return bottle.redirect('/admin/categories')
@@ -447,7 +461,10 @@ def index():
 def index():
     viewdata = commonViewDataAdmin()
 
-    viewdata['content'] = EntityManager(_DBCON).get_all(HomePageContent)[0].content
+    viewdata['content'] = EntityManager(_DBCON).get_all(
+                                                    EditableContent
+                                                    , filter_criteria={'identifier':'homepage-content-box'}
+                                                )[0].content
 
     return bottle.template('homepagetext', vd=viewdata)
 
@@ -457,7 +474,7 @@ def index():
 @checklogin
 @ForceHTTP
 def index():
-    homepagecontent = EntityManager(_DBCON).get_all(HomePageContent)[0]
+    homepagecontent = EntityManager(_DBCON).get_all(EditableContent, filter_criteria={'identifier':'homepage-content-box'})[0]
     homepagecontent.content = bottle.request.POST.content
     homepagecontent.save()
 
@@ -517,7 +534,10 @@ def index():
     filter_criteria = {}
     
     if bottle.request.GET.get('category') and bottle.request.GET.get('category') != 'all':
-        filter_criteria = {'category.slug':bottle.request.GET.get('category')}
+        if bottle.request.GET.get('category') == 'homepagepics':
+            filter_criteria = {'isHomepagePic':True}
+        else:
+            filter_criteria = {'category.slug':bottle.request.GET.get('category')}
 
     images = EntityManager(_DBCON).get_all(Image, filter_criteria=filter_criteria, sort_by=[('added', -1)])
 
@@ -543,6 +563,34 @@ def index(id, bool):
     i.save()
 
     return '1'
+
+
+
+@bottle.route('/admin/image/:id/description', method='GET')
+@checklogin
+@ForceHTTP
+def index(id):
+    viewdata = commonViewDataAdmin()
+
+    i = Image(_DBCON, _id=id)
+
+    viewdata['image'] = i
+
+    return bottle.template('admin_image_description', vd=viewdata)
+
+
+
+@bottle.route('/admin/image/:id/description', method='POST')
+@checklogin
+@ForceHTTP
+def index(id):
+
+    if bottle.request.POST.get('description'):
+        i = Image(_DBCON, _id=id)
+        i.description = bottle.request.POST.get('description')
+        i.save()
+
+    return bottle.redirect('/admin/images')
 
 
 

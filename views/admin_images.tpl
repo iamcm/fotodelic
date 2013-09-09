@@ -13,6 +13,7 @@
 	<label for="id_category" id="id_category_label">Filter for:</label>
 	<select name="category" id="id_category">
 		<option value="all" selected="selected">All</option>
+			<option value="homepagepics">Homepage Pics</option>
 		%for c in vd['cats']:
 			<option value="{{c.slug}}">{{c.name}}</option>
 		%end
@@ -29,29 +30,31 @@
 
 <div id="imagelistcontainer" class="imagelist tablelist">
 		
-	<table>
 	%for i in vd['images']:
-		<tr class="row">
-			<td class="col1">
-				<img src="/static/{{i.filepath.replace('uploads/','uploads/thumbs/')}}" />
-				 {{i.nicename}}
+		<div class="row-fluid my5">
+			<div class="span4">
+				<img title="{{i.nicename}}" src="/static/{{i.filepath.replace('uploads/','uploads/thumbs/')}}" />
 				({{i.comment_count}} comment(s))
-			</td>
+			</div>
 			
-			<td class="col2">
-				<a href="/gallery/{{i.category['slug']}}/{{i._id}}">View on site</a>
-				|
-				%if i.isHomepagePic:
-				<a style="cursor:pointer" data-href="/admin/image/{{i._id}}/toggle-homepage/" onclick="toggleHompagePic(this)">Remove from homepage pics</a>
-				%else:
-				<a style="cursor:pointer" data-href="/admin/image/{{i._id}}/toggle-homepage/" onclick="toggleHompagePic(this)">Set as homepage pic</a>
-				%end
-				|
-				<a href="/admin/image/{{i._id}}/delete" onclick="return confirm('Are you sure you want to permanently delete this image?')">Delete</a>
-			</td>
-		</tr>
+			<div class="span8">
+				<span class="right">
+					<a href="/gallery/{{i.category['slug']}}/{{i._id}}">View on site</a>
+					|
+					<a href="/admin/image/{{i._id}}/description">Add description</a>
+					|
+					%if i.isHomepagePic:
+					<a style="cursor:pointer" data-href="/admin/image/{{i._id}}/toggle-homepage/" onclick="toggleHompagePic(this)">Remove from homepage pics</a>
+					%else:
+					<a style="cursor:pointer" data-href="/admin/image/{{i._id}}/toggle-homepage/" onclick="toggleHompagePic(this)">Set as homepage pic</a>
+					%end
+					|
+					<a href="/admin/image/{{i._id}}/delete" onclick="return confirm('Are you sure you want to permanently delete this image?')">Delete</a>
+				</span>
+			</div>
+		</div>
 	%end
-	</table>
+
 </div>
 
 %rebase base_admin vd=vd

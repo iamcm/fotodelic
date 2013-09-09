@@ -8,23 +8,18 @@
     </div>
     %end
 
-    <form autocomplete="off" class="form-horizontal" method='POST' action="/admin/category">
-		
-	    %if vd.get('cat'):
-	    	<input type="hidden" name="id" value="{{vd['cat']._id}}" />
-	    %end
+	<img class="theimage" src="/static/{{vd['image'].filepath}}"/>
 
-        <div class="control-group">
-            <label class="control-label" for="name">Name</label>
-            <div class="controls">
-                <input type="text" class="input-xlarge" name="name" id="name" value="{{vd['cat'].name if vd.get('cat') else ''}}"  />
-            </div>
-        </div>
+	<hr />
+
+    <form autocomplete="off" class="form-horizontal" method='POST' action="/admin/image/{{vd['image']._id}}/description">
+		
+    	<input type="hidden" name="id" value="{{vd['image']._id}}" />
 
         <div class="control-group">
             <label class="control-label" for="description">Description</label>
             <div class="controls">
-                <textarea class="input-xlarge" name="description" id="description">{{vd['cat'].description if vd.get('cat') and vd['cat'].description else ''}}</textarea>
+                <textarea class="input-xlarge" name="description" id="description">{{vd['image'].description if vd['image'].description else ''}}</textarea>
             </div>
         </div>
         
