@@ -15,7 +15,14 @@ from models.Models import *
 from PIL import Image as PILImage
 
 
-auth_plugin = AuthPlugin(EntityManager())
+public_urls = [
+    '/',
+    '/gallery/:slug',
+    '/gallery/:slug/:imageId',
+    '/gallery/:slug/:imageId/comment',
+]
+
+auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
 
 
 def randomfilename():

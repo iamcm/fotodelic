@@ -20,7 +20,7 @@
                 -
                 <a href="/admin">Control panel</a>
                 -
-                <a href="/logout">Logout</a>
+                <a href="/auth/logout">Logout</a>
             </span>
         </div>
             
