@@ -1,61 +1,44 @@
 import datetime
-from dateutil import parser
-from models.BaseModel import BaseModel
+from BaseModel import BaseModel
 from models import Util
 
 class Category(BaseModel):    
-    def __init__(self, _DBCON, _id=None):
-        self.fields = [
-            ('name', None),
-            ('slug', None),
-            ('description', None),
-            ('added', datetime.datetime.now()),
-            ('oldId', None),            
-        ]
-        super(self.__class__, self).__init__(_DBCON, _id)
-        
-    def save(self):
-        self.slug = self.name.replace(' ','-')
-        BaseModel.save(self)
+    def __init__(self):
+        self.name = None
+        self.slug = None
+        self.description = None
+        self.added = datetime.datetime.now()
+
+    def _presave(self, entitManager):
+        self.slug = self.name.lower().replace(' ','-')
 
 
 class Image(BaseModel):    
-    def __init__(self, _DBCON, _id=None):
-        self.fields = [
-            ('description', None),
-            ('filepath', None),
-            ('nicename', None),
-            ('isHomepagePic', False),
-            ('category', None),
-            ('added', datetime.datetime.now()),
-            ('oldId', None),            
-        ]
-        super(self.__class__, self).__init__(_DBCON, _id)
+    def __init__(self):
+        self.description = None
+        self.filepath = None
+        self.nicename = None
+        self.isHomepagePic = False
+        self.category = None
+        self.added = datetime.datetime.now()
 
 
 class Comment(BaseModel):    
-    def __init__(self, _DBCON, _id=None):
-        self.fields = [
-            ('imageId', None),
-            ('name', None),
-            ('comment', None),
-            ('added', datetime.datetime.now()),
-        ]
-        super(self.__class__, self).__init__(_DBCON, _id)
+    def __init__(self):
+        self.imageId = None
+        self.name = None
+        self.comment = None
+        self.added = datetime.datetime.now()
         
     def niceAdded(self):
-#        d = parser.parse(self.added)
- #       return Util.niceDate(d)
         return Util.niceDate(self.added)
 
+
 class EditableContent(BaseModel):    
-    def __init__(self, _DBCON, _id=None):
-        self.fields = [
-            ('content', None),
-            ('identifier', None),
-            ('added', datetime.datetime.now()),
-        ]
-        super(self.__class__, self).__init__(_DBCON, _id)
+    def __init__(self):
+        self.content = None
+        self.identifier = None
+        self.added = datetime.datetime.now()
       
 
 

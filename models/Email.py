@@ -1,6 +1,6 @@
 import smtplib
 from email.mime.text import MIMEText
-from models import Logger
+from Helpers import logger
 import settings
 
 class Email:
@@ -24,5 +24,5 @@ class Email:
                     s.login(settings.EMAILUSERNAME, settings.EMAILPASSWORD)
                 s.sendmail(self.sender, r, msg.as_string())
             except:
-                Logger.log_to_file(msg.as_string())
+                logger.log_to_file(msg.as_string())
         

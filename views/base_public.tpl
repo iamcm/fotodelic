@@ -8,10 +8,10 @@
 
     <title>Fotodelic</title>
 
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css?{{vd['CACHEBREAKER']}}" />
-    <link rel="stylesheet" href="/static/css/generic.css?{{vd['CACHEBREAKER']}}" />
-    <link rel="stylesheet" href="/static/css/global.css?{{vd['CACHEBREAKER']}}" />
-    <link rel="stylesheet" href="/static/css/public.css?{{vd['CACHEBREAKER']}}" />
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css?" />
+    <link rel="stylesheet" href="/static/css/generic.css?" />
+    <link rel="stylesheet" href="/static/css/global.css?" />
+    <link rel="stylesheet" href="/static/css/public.css?" />
     <link href="http://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
     %if defined('css'):
         %css()
@@ -39,7 +39,7 @@
             </div>
             <div class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
-                    %if vd['cats']:
+                    %if defined('vd') and 'cats' in vd:
                         %for c in vd['cats']:
                         <li><a href="/gallery/{{c.slug}}">{{c.name}}</a></li>
                         %end
@@ -53,8 +53,8 @@
 
 
     <script src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/static/js/global.js?{{vd['CACHEBREAKER']}}"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js?{{vd['CACHEBREAKER']}}"></script>
+    <script src="/static/js/global.js"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     %if defined('js'):
         %js()
     %end

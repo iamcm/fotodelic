@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Fotodelic</title>
-        <link rel="stylesheet" href="/static/css/bootstrap.min.css?{{vd['CACHEBREAKER']}}" />
-        <link rel="stylesheet" href="/static/css/generic.css?{{vd['CACHEBREAKER']}}" />
-        <link rel="stylesheet" href="/static/css/global.css?{{vd['CACHEBREAKER']}}" />
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css?" />
+        <link rel="stylesheet" href="/static/css/generic.css?" />
+        <link rel="stylesheet" href="/static/css/global.css?" />
         <link href="http://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
         %if defined('css'):
             %css()
@@ -14,7 +14,7 @@
     <body>
         
         <div id="adminbar">
-            Logged in: {{vd['user'].username}}
+            Logged in: {{vd['user'].email}}
             <span class="right">
                 <a href="/">Home</a>
                 -
@@ -38,7 +38,7 @@
         </div>
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <script src="/static/js/global.js?{{vd['CACHEBREAKER']}}"></script>
+        <script src="/static/js/global.js?"></script>
         %if defined('js'):
             %js()
         %end

@@ -39,7 +39,7 @@
 			
 			<div class="span8">
 				<span class="right">
-					<a href="/gallery/{{i.category['slug']}}/{{i._id}}">View on site</a>
+					<a href="/gallery/{{i.category.slug if i.category else ''}}/{{i._id}}">View on site</a>
 					|
 					<a href="/admin/image/{{i._id}}/description">Add description</a>
 					|
