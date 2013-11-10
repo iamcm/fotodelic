@@ -8,10 +8,10 @@
 
     <title>Fotodelic</title>
 
-    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css?" />
-    <link rel="stylesheet" href="/static/css/generic.css?" />
-    <link rel="stylesheet" href="/static/css/global.css?" />
-    <link rel="stylesheet" href="/static/css/public.css?" />
+    <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css?11" />
+    <link rel="stylesheet" href="/static/css/generic.css?11" />
+    <link rel="stylesheet" href="/static/css/global.css?11" />
+    <link rel="stylesheet" href="/static/css/public.css?11" />
     <link href="http://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
     %if defined('css'):
         %css()
@@ -53,8 +53,8 @@
 
 
     <script src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/static/js/global.js"></script>
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/js/global.js?11"></script>
+    <script src="/static/bootstrap/js/bootstrap.min.js?11"></script>
     %if defined('js'):
         %js()
     %end
