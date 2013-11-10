@@ -125,7 +125,7 @@ def index(slug, imageId):
             'slug':slug,
             'previous':previous,
             'next':next,
-            'comments_url': bottle.request.url,
+            'comments_url': settings.BASEURL + bottle.request.urlparts.path,
         })
 
 
