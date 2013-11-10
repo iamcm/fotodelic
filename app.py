@@ -13,7 +13,7 @@ from models import Util
 from models.Email import Email
 from models.Models import *
 from PIL import Image as PILImage
-
+from BottlePlugins import ForceProtocolPlugin
 
 public_urls = [
     '/',
@@ -22,7 +22,7 @@ public_urls = [
 ]
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
-
+force_http_plugin = ForceProtocolPlugin(protocol='http', environment=settings.ENVIRONMENT)
 
 def randomfilename():
    return str( random.randint(1000, 1000000) ) 
@@ -337,6 +337,7 @@ def index(id):
 
 
 app = bottle.app()
+app.install(force_http_plugin)
 app.install(auth_plugin)
 #app.install(viewdata_plugin)
 
