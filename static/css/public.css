@@ -43,3 +43,9 @@ body
 	color: #000;
 	font-family:  "Nunito","Lucida Grande", Helvetica, Arial, sans-serif !important;
 }
+
+.fb-wrapper
+{
+	position: relative;
+	width: 100%;
+}

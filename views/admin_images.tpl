@@ -19,12 +19,6 @@
 		%end
 	</select>
 
-	<label for="id_order" id="id_order_label">Order by:</label>
-	<select name="order" id="id_order">
-		<option value="date" selected="selected">Date added</option>
-		<option value="comments">Comments</option>
-	</select>
-
 	<input type="submit" value="Filter images" style="width:auto;">
 </form>
 
@@ -34,7 +28,6 @@
 		<div class="row-fluid my5">
 			<div class="span4">
 				<img title="{{i.nicename}}" src="/static/{{i.filepath.replace('uploads/','uploads/thumbs/')}}" />
-				({{i.comment_count}} comment(s))
 			</div>
 			
 			<div class="span8">

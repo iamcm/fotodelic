@@ -23,17 +23,6 @@ class Image(BaseModel):
         self.added = datetime.datetime.now()
 
 
-class Comment(BaseModel):    
-    def __init__(self):
-        self.imageId = None
-        self.name = None
-        self.comment = None
-        self.added = datetime.datetime.now()
-        
-    def niceAdded(self):
-        return Util.niceDate(self.added)
-
-
 class EditableContent(BaseModel):    
     def __init__(self):
         self.content = None

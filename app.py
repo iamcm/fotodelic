@@ -19,7 +19,6 @@ public_urls = [
     '/',
     '/gallery/:slug',
     '/gallery/:slug/:imageId',
-    '/gallery/:slug/:imageId/comment',
 ]
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
@@ -120,44 +119,22 @@ def index(slug, imageId):
     if image == None:
         return bottle.HTTPError(404)
 
-    comments = EntityManager().find('Comment', {'imageId':str(image._id)})
-
     viewdata = commonViewData()
     viewdata.update({
             'image':image,
             'slug':slug,
             'previous':previous,
             'next':next,
-            'comments':comments or [],
+            'comments_url': bottle.request.url,
         })
+
 
     return bottle.template('imagedetail', vd=viewdata)
 
 
 
-@bottle.route('/gallery/:slug/:imageId/comment', method='POST')
-def index(slug, imageId):
-    n = bottle.request.POST.get('name') or 'Anonymous'
-    c = bottle.request.POST.get('comment')
-
-    if n and c:
-        com = Comment()
-        com.name = n
-        com.comment = c
-        com.imageId = imageId
-        EntityManager().save('Comment', com)
-
-
-        e = Email()
-        body = 'A comment has been added to fotodelic.co.uk:\n\r\n http://%s/gallery/%s/%s' % (bottle.request.environ['HTTP_HOST'], slug, imageId)
-        e.send('Fotodelic - comment added', body)               
-
-
-    return bottle.redirect(bottle.request.environ['HTTP_REFERER'])
-
-
-
 @bottle.route('/admin')
+@bottle.route('/login')
 def index():
     viewdata = commonViewDataAdmin()
 
@@ -219,26 +196,6 @@ def index():
         viewdata['error'] = 'Required data is missing'
 
         return bottle.template('admin_category', vd=viewdata)
-
-
-
-@bottle.route('/admin/comment/:id/delete', method='GET')
-def index(id):
-    EntityManager().remove_one('Comment', id)
-
-    return bottle.redirect('/admin/comments')
-
-
-
-@bottle.route('/admin/comments')
-def index():
-    viewdata = commonViewDataAdmin()
-    viewdata['comments'] = EntityManager().find('Comment', sort=[('added',-1)])
-
-    for c in viewdata['comments']:
-        setattr(c, 'image', EntityManager().find_one_by_id('Image', c.imageId))
-
-    return bottle.template('admin_comments', vd=viewdata)
 
 
 
@@ -315,13 +272,6 @@ def index():
 
     images = EntityManager().find('Image', objfilter=filter_criteria, sort=[('added', -1)])
 
-    for i in images:
-        count = EntityManager().find_raw('Comment', objfilter={'imageId':str(i._id)}, count=True)
-        setattr(i, 'comment_count', count)
-
-    if bottle.request.GET.get('order') and bottle.request.GET.get('order') == 'comments':
-        images = sorted(images, key=lambda i: i.comment_count, reverse=True)
-
     viewdata['images'] = images
 
     return bottle.template('admin_images', vd=viewdata)
@@ -373,9 +323,6 @@ def index(id):
 
         if os.path.isfile(path.replace('uploads/','uploads/thumbs/')):
             os.remove(path.replace('uploads/','uploads/thumbs/'))
-
-    for c in EntityManager().find('Comment', {'imageId':str(i._id)}):
-        EntityManager().remove_one('Comment', c._id)
 
     EntityManager().remove_one('Image', i._id)
 
