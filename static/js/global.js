@@ -41,7 +41,7 @@ $(document).ready(function(){
     positionHomepageText();
     setTimeout(function(){
         positionHomepageText();        
-    },10)
+    },10);
 });
 
 $(window).on('resize', function(){

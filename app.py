@@ -184,7 +184,10 @@ def index():
     d = bottle.request.POST.description
 
     if n:
-        cat = EntityManager().find_one_by_id('Category', bottle.request.POST.id)
+        if bottle.request.POST.get('id'):
+            cat = EntityManager().find_one_by_id('Category', bottle.request.POST.id)
+        else:
+            cat = Category()
         cat.name = n
         cat.description = d
         EntityManager().save('Category', cat)
@@ -280,9 +283,11 @@ def index():
 
 @bottle.route('/admin/image/:id/toggle-homepage/:bool')
 def index(id, bool):
-    i = EntityManager().find_one_by_id('Image', id)
+    em = EntityManager()
+    i = em.find_one_by_id('Image', id)
     i.isHomepagePic = bool == '1'
-    i.save()
+
+    em.save('Image', i)
 
     return '1'
 

@@ -2,9 +2,9 @@
 <html>
     <head>
         <title>Fotodelic</title>
-        <link rel="stylesheet" href="/static/css/bootstrap.min.css?" />
-        <link rel="stylesheet" href="/static/css/generic.css?" />
-        <link rel="stylesheet" href="/static/css/global.css?" />
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css?12" />
+        <link rel="stylesheet" href="/static/css/generic.css?12" />
+        <link rel="stylesheet" href="/static/css/global.css?12" />
         <link href="http://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
         %if defined('css'):
             %css()
@@ -37,8 +37,8 @@
             </div>
         </div>
         
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-        <script src="/static/js/global.js?"></script>
+        <script src="http://codeorigin.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="/static/js/global.js?12"></script>
         %if defined('js'):
             %js()
         %end
