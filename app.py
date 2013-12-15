@@ -6,7 +6,7 @@ import bottle
 import settings
 from db import _DBCON
 from Helpers import logger
-from EntityManager import EntityManager
+from mongorm.EntityManager import EntityManager
 from Auth.auth import AuthService, User, AuthPlugin
 from Auth.apps import auth_app
 from models import Util
@@ -245,10 +245,7 @@ def index():
     uploadedFile.save(fullpath)
 
     try:
-        size = 150, 150
-        im = PILImage.open(fullpath)
-        im.thumbnail(size)
-        im.save(fullpath.replace('/uploads/','/uploads/thumbs/'))
+        os.system('convert %s -resize 150 %s' % (fullpath, fullpath.replace('/uploads/','/uploads/thumbs/')))
     except:
         uploadedFile.save(fullpath.replace('/uploads/','/uploads/thumbs/'))
 

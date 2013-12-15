@@ -1,5 +1,5 @@
 import datetime
-from BaseModel import BaseModel
+from mongorm.BaseModel import BaseModel
 from models import Util
 
 class Category(BaseModel):    
