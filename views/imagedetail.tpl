@@ -23,12 +23,20 @@
 
         <hr />
 
-        <form method="post" action="/basket/add">
-            <input type="hidden" name="returnTo" value="{{vd['url']}}">
-            <input type="hidden" name="id" value="{{vd['image']._id}}">
-            <input type="hidden" name="name" value="{{vd['image'].nicename}}">
-            <input type="submit" class="btn btn-primary" value="Add to basket" />
-        </form>
+        <div class="py5">
+            <div class="col-sm-3">
+                <input type="radio" disabled="disabled" checked="checked"> Full quality original print - £0.01
+            </div>
+            <div class="col-sm-3">
+                <form method="post" action="/basket/add">
+                    <input type="hidden" name="returnTo" value="{{vd['url']}}">
+                    <input type="hidden" name="id" value="{{vd['image']._id}}">
+                    <input type="hidden" name="name" value="{{vd['image'].nicename}}">
+                    <input type="submit" class="btn btn-primary" value="Add to basket" />
+                </form>
+            </div>
+            <div class="clearfix"></div>
+        </div>
 
 
         <div class="fb-wrapper"></div>

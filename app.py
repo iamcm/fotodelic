@@ -358,11 +358,17 @@ def index():
     if basket is None:
         basket = []
 
-    basket.append({
-        'id': id,
-        'name': name,
-        'price': 1.50,
-        })
+    already_exists = False
+    for item in basket:
+        if item['id'] == id:
+            already_exists = True
+
+    if not already_exists:
+        basket.append({
+            'id': id,
+            'name': name,
+            'price': 0.01,
+            })
 
     bottle.request.session_data['basket'] = basket
     bottle.response.add_header('Location', returnTo)
