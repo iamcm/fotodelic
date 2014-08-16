@@ -23,7 +23,7 @@
 
         <hr />
 
-        <div class="py5">
+        <div class="well">
             <div class="col-sm-3">
                 <input type="radio" disabled="disabled" checked="checked"> Full quality original print - £0.01
             </div>
