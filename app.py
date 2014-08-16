@@ -6,14 +6,13 @@ import bottle
 import settings
 from db import _DBCON
 from Helpers import logger
+from Helpers.emailHelper import Email
 from mongorm.EntityManager import EntityManager
 from Auth.auth import AuthService, User, AuthPlugin
 from Auth.apps import auth_app
-from models import Util
-from models.Email import Email
 from models.Models import *
-from PIL import Image as PILImage
-from BottlePlugins import ForceProtocolPlugin
+from BottlePlugins import ForceProtocolPlugin, SessionDataPlugin
+from Helpers import aes
 
 public_urls = [
     '/',
@@ -23,6 +22,7 @@ public_urls = [
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
 force_http_plugin = ForceProtocolPlugin(protocol='http', environment=settings.ENVIRONMENT)
+session_data_plugin = SessionDataPlugin(name='sc')
 
 def randomfilename():
    return str( random.randint(1000, 1000000) ) 
@@ -43,9 +43,16 @@ if settings.PROVIDE_STATIC_FILES:
 # Main app routes
 #######################################################
 def commonViewData():
+    if hasattr(bottle.request, 'session_data') and bottle.request.session_data.has_key('basket'):
+        basketcount = len(bottle.request.session_data['basket'])
+    else:
+        basketcount = 0
     return {
         'CACHEBREAKER':'1',
-        'cats':EntityManager().find('Category', sort=[('name',1)])
+        'cats':EntityManager().find('Category', sort=[('name',1)]),
+        'environment':settings.ENVIRONMENT,
+        'basketcount':basketcount,
+        'url':bottle.request.url
     }
 
 def commonViewDataAdmin():
@@ -66,6 +73,8 @@ def index():
             'images':images,
             'text':text,
         })
+
+    bottle.response.set_cookie('sc',json.dumps({}))
 
     return bottle.template('index', vd=viewdata)
 
@@ -333,6 +342,186 @@ def index(id):
 
 
 
+@bottle.route('/basket/add', method='POST')
+def index():
+    id = bottle.request.POST.get('id')
+    name = bottle.request.POST.get('name')
+    returnTo = bottle.request.POST.get('returnTo')
+
+    basket = bottle.request.session_data.get('basket')
+    if basket is None:
+        basket = []
+
+    basket.append({
+        'id': id,
+        'name': name,
+        'price': 1.50,
+        })
+
+    bottle.request.session_data['basket'] = basket
+    bottle.response.add_header('Location', returnTo)
+    bottle.response.status = 303
+
+    return ''
+
+
+
+@bottle.route('/basket/remove', method='POST')
+def index():
+    id = bottle.request.POST.get('id')
+    returnTo = bottle.request.POST.get('returnTo')
+
+    basket = bottle.request.session_data.get('basket')
+    if basket:
+        newbasket = []
+        for item in basket:
+            if item['id'] != id:
+                newbasket.append(item)
+
+        bottle.request.session_data['basket'] = newbasket
+
+    bottle.response.add_header('Location', returnTo)
+    bottle.response.status = 303
+
+    return ''
+
+
+
+@bottle.route('/checkout')
+def index():
+    basket = bottle.request.session_data.get('basket')
+    if basket is None:
+        basket = []
+
+    viewdata = commonViewData()
+    viewdata['basket'] = basket
+
+    return bottle.template('checkout', vd=viewdata)
+
+
+
+@bottle.route('/checkout-send', method='POST')
+def index():
+    basket = bottle.request.session_data.get('basket')
+    if basket is None:
+        return bottle.redirect('/')
+
+    email = bottle.request.POST.get('email','')
+    if email.strip() == '':
+        return bottle.redirect('/checkout')
+
+    b = Basket()
+    b.session_id = bottle.request.session_data.get('_id')
+    b.email = email
+
+    items = []
+    paypal_item_counter = 1
+    for item in basket:
+        o = OrderLine()
+        o.item_id = item['id']
+        o.title = item['name']
+        o.quantity = bottle.request.POST.get('quantity_'+ item['id'])
+        o.price = 0.01
+        b.orderlines.append(o)
+
+        if bottle.request.POST.get('quantity_'+ item['id']):
+            items.append({
+                'counter':str(paypal_item_counter),
+                'name':item['name'],
+                'quantity':bottle.request.POST.get('quantity_'+ item['id']),
+                'cost':0.01,
+                })
+
+            paypal_item_counter += 1
+
+    EntityManager().save('Basket', b)
+
+    bottle.request.session_data['basket'] = []
+
+    return bottle.template('checkout_send', items=items)
+
+
+
+@bottle.route('/checkout-complete')
+def index():
+    baskets = EntityManager().find('Basket', {'session_id':bottle.request.session_data['_id'], 'processed':False}, sort=[('added',-1)])
+    if len(baskets) == 0:
+        raise Exception("No basket found for user trying to complete checkout")
+
+    basket = baskets[0]
+
+    """
+    Email the purchaser
+    """
+    message = "<p>Thank you for your purchase.</p>"
+    message += "<p>These items will be emailed to you shortly:</p>"
+    message += "<p></p>"
+
+    for o in basket.orderlines:
+        message += "<p>%s (Quantity %s)</p>" % (o.title, o.quantity)
+
+    message += "<p></p>"
+    message += "<p></p>"
+    message += "<p>Kind regards</p>"
+    message += "<p>Fotodelic</p>"
+
+    e = Email(sender=settings.EMAILSENDER, recipients=[basket.email])
+    e.send('Fotodelic purchase', message)
+
+    #copy to the site developer
+    e = Email(sender=settings.EMAILSENDER, recipients=['i.am.chrismitchell@gmail.com'])
+    e.send('Fotodelic purchase', message)
+
+    """
+    Email the site owner
+    """
+    siteemailmessage = "<p>---Image Purchased---</p>"
+    siteemailmessage += "<p></p>"
+    siteemailmessage += "<p>Purchasing email: %s</p>" % basket.email
+    for o in basket.orderlines:
+        siteemailmessage += "<p>Image: %s (Quantity %s)</p>" % (o.title, o.quantity)
+    siteemailmessage += "<p></p>"
+    siteemailmessage += "<p>Please check your PayPal account to ensure that the payment is 'complete'. If the payment is not complete please email the purchaser to reassure them that it is being processed. If the payment is complete please email the full quality image(s) to the purchaser</p>"
+    siteemailmessage += "<p></p>"
+    siteemailmessage += "<p></p>"
+    siteemailmessage += "<p>Kind regards</p>"
+    siteemailmessage += "<p>Fotodelic</p>"
+
+    e = Email(sender=settings.EMAILSENDER, recipients=settings.EMAILRECIPIENTS)
+    e.send('Fotodelic purchase', siteemailmessage)
+
+    basket.processed = True
+    EntityManager().save('Basket', basket)
+
+    return bottle.redirect('/checkout-success')
+
+
+
+@bottle.route('/checkout-success')
+def index():
+    viewdata = commonViewData()
+
+    return bottle.template('checkout_success', vd=viewdata)
+
+
+
+
+@bottle.error(500)
+def index(*args):
+    if len(args) > 0:
+        err = args[0]
+
+    output = err.traceback
+    output += ' <hr /> '
+    output += str(bottle.request.headers.__dict__)
+
+    try:
+        e = Email(sender=settings.EMAILSENDER, recipients=['i.am.chrismitchell@gmail.com'])
+        e.send('Fotodelic 500 error', output)
+    except:
+        logger.log_exception()
+
+    return '500 error occurred'
 
 
 #######################################################
@@ -341,6 +530,7 @@ def index(id):
 app = bottle.app()
 app.install(force_http_plugin)
 app.install(auth_plugin)
+app.install(session_data_plugin)
 #app.install(viewdata_plugin)
 
 app.mount('/auth/', auth_app)

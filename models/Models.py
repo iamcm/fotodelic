@@ -29,5 +29,21 @@ class EditableContent(BaseModel):
         self.identifier = None
         self.added = datetime.datetime.now()
       
+      
+class Basket(BaseModel):
+    def __init__(self):
+        self.orderlines = []
+        self.session_id = None
+        self.email = None
+        self.processed = False
+        self.added = datetime.datetime.now()
 
+
+class OrderLine(BaseModel):
+    def __init__(self):
+        self.item_id = None
+        self.title = None
+        self.quantity = 1
+        self.price = None
+        self.added = datetime.datetime.now()
 

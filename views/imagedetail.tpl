@@ -23,6 +23,13 @@
 
         <hr />
 
+        <form method="post" action="/basket/add">
+            <input type="hidden" name="returnTo" value="{{vd['url']}}">
+            <input type="hidden" name="id" value="{{vd['image']._id}}">
+            <input type="hidden" name="name" value="{{vd['image'].nicename}}">
+            <input type="submit" class="btn btn-primary" value="Add to basket" />
+        </form>
+
 
         <div class="fb-wrapper"></div>
 

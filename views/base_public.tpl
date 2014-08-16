@@ -6,7 +6,15 @@
     
     <link rel="shortcut icon" href="/static/favicon.png">
 
-    <title>Fotodelic</title>
+    %if defined('vd'):
+      %if vd['environment'] != 'production' and vd['environment'] != 'live':
+      <title>Fotodelic {{vd['environment']}}</title>
+      %else:
+      <title>Fotodelic</title>
+      %end
+    %else:
+      <title>Fotodelic</title>
+    %end
 
     <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css?12" />
     <link rel="stylesheet" href="/static/css/generic.css?12" />
@@ -23,7 +31,24 @@
       <![endif]-->
   </head>
 
-  <body>
+  %if defined('bodyclass'):
+    <body class="{{bodyclass}}">
+  %else:
+    <body class="">
+  %end
+    %if defined('vd'):
+      %if 'basketcount' in vd and vd['basketcount'] > 0:
+      <div id="basket-count-container" class="p10">
+        You have {{vd['basketcount']}} \\
+        %if vd['basketcount'] == 1:
+          item \\
+        %else:
+          items \\
+        %end
+        in your basket - <a href="/checkout" class="underline">Proceed to checkout</a>
+      </div>
+      %end
+    %end
 
     <div class="navbar navbar-default">
         <div class="container">
@@ -59,28 +84,32 @@
         %js()
     %end
 
-    <div id="fb-root"></div>
-    <script>
-      window.fbAsyncInit = function() {
-        // init the FB JS SDK
-        FB.init({
-          appId      : '1436992026521137',                   // App ID from the app dashboard
-          status     : true,                                 // Check Facebook Login status
-          xfbml      : true                                  // Look for social plugins on the page
-        });
+    %if defined('vd'):
+      %if vd['environment'] == 'production' or vd['environment'] == 'live':
+      <div id="fb-root"></div>
+      <script>
+        window.fbAsyncInit = function() {
+          // init the FB JS SDK
+          FB.init({
+            appId      : '1436992026521137',                   // App ID from the app dashboard
+            status     : true,                                 // Check Facebook Login status
+            xfbml      : true                                  // Look for social plugins on the page
+          });
 
-        // Additional initialization code such as adding Event Listeners goes here
-      };
+          // Additional initialization code such as adding Event Listeners goes here
+        };
 
-      // Load the SDK asynchronously
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/all.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
-    </script>
+        // Load the SDK asynchronously
+        (function(d, s, id){
+           var js, fjs = d.getElementsByTagName(s)[0];
+           if (d.getElementById(id)) {return;}
+           js = d.createElement(s); js.id = id;
+           js.src = "//connect.facebook.net/en_US/all.js";
+           fjs.parentNode.insertBefore(js, fjs);
+         }(document, 'script', 'facebook-jssdk'));
+      </script>
+      %end
+    %end
 
 </body>
 </html>

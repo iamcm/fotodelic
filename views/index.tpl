@@ -19,4 +19,4 @@
 <script src="/static/js/slideshow.js"></script>
 %end
 
-%rebase base_public vd=vd, js=js
+%rebase base_public vd=vd, js=js, bodyclass='home'

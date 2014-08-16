@@ -23,6 +23,11 @@ a
 	text-decoration:none;
 }
 
+a.underline
+{
+	text-decoration:underline;
+}
+
 a:hover
 {
 	text-decoration:underline;
@@ -428,4 +433,16 @@ a:hover
 .tinymce-content p
 {
 	margin: 0px;
+}
+
+.home #basket-count-container
+,.checkout #basket-count-container
+{
+	display: none;
+}
+
+.basket-orderline-row
+{
+	border-bottom: 1px solid #cdcdcd;
+	padding: 10px 0;
 }
