@@ -18,6 +18,10 @@ public_urls = [
     '/',
     '/gallery/:slug',
     '/gallery/:slug/:imageId',
+    '/checkout',
+    '/checkout-send',
+    '/checkout-complete',
+    '/checkout-success',
 ]
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
