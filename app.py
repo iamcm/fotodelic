@@ -22,6 +22,8 @@ public_urls = [
     '/checkout-send',
     '/checkout-complete',
     '/checkout-success',
+    '/basket/add',
+    '/basket/remove',
 ]
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
