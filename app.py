@@ -450,7 +450,7 @@ def index():
 def index():
     baskets = EntityManager().find('Basket', {'session_id':bottle.request.session_data['_id'], 'processed':False}, sort=[('added',-1)])
     if len(baskets) == 0:
-        raise Exception("No basket found for user trying to complete checkout")
+        return "No basket found"
 
     basket = baskets[0]
 
