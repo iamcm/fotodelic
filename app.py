@@ -454,7 +454,7 @@ def index():
 
 
 
-@bottle.route('/checkout-complete')
+@bottle.route('/checkout-complete', method=['GET','POST'])
 def index():
     baskets = EntityManager().find('Basket', {'session_id':bottle.request.session_data['_id'], 'processed':False}, sort=[('added',-1)])
     if len(baskets) == 0:
