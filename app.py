@@ -459,7 +459,7 @@ def index():
     message += "<p></p>"
 
     for item in items:
-        message += "<p>%s (Quantity %s) - £%s</p>".decode('utf8') % (item['name'], item['quantity'], item['cost'])
+        message += "<p>%s (Quantity %s) - &pound;%s</p>" % (item['name'], item['quantity'], item['cost'])
 
     message += "<p></p>"
     message += "<p>There should be an 'Image purchased' email that follows this email that the will be generated when the user RETURNS to the site from PayPal - if this does not arrive then we need to check PayPal because the user may have completed payment and just closed the browser, in which case we need to send them the images but wont have had any confirmation of this!</p>"
@@ -468,7 +468,7 @@ def index():
     message += "<p>Fotodelic</p>"
 
     e = Email(sender=settings.EMAILSENDER, recipients=settings.DEVELOPERRECIPIENTS)
-    e.send('Fotodelic potential purchase', message.encode('utf8'))
+    e.send('Fotodelic potential purchase', message)
 
     return bottle.template('checkout_send', items=items)
 
