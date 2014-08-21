@@ -462,7 +462,7 @@ def index():
         message += "<p>%s (Quantity %s) - &pound;%s</p>" % (item['name'], item['quantity'], item['cost'])
 
     message += "<p></p>"
-    message += "<p>There should be an 'Image purchased' email that follows this email that the will be generated when the user RETURNS to the site from PayPal - if this does not arrive then we need to check PayPal because the user may have completed payment and just closed the browser, in which case we need to send them the images but wont have had any confirmation of this!</p>"
+    message += "<p><strong>IF</strong> the user completes payment there should be an 'Image purchased' email that follows this email that the will be generated when the user RETURNS to the site from PayPal - if this does not arrive then we need to check PayPal because the user may have completed payment and just closed the browser, in which case we need to send them the images but wont have had any confirmation of this!</p>"
     message += "<p></p>"
     message += "<p>Kind regards</p>"
     message += "<p>Fotodelic</p>"
