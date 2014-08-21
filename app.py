@@ -1,3 +1,4 @@
+# coding=utf8
 import random
 import json
 import datetime
@@ -452,6 +453,23 @@ def index():
 
     bottle.request.session_data['basket'] = []
 
+    message = "<p>---User directed to PayPal---</p>"
+    message += "<p></p>"
+    message += "<p>Purchasing email: %s</p>" % email
+    message += "<p></p>"
+
+    for item in items:
+        message += "<p>%s (Quantity %s) - £%s</p>".decode('utf8') % (item['name'], item['quantity'], item['cost'])
+
+    message += "<p></p>"
+    message += "<p>There should be an 'Image purchased' email that follows this email that the will be generated when the user RETURNS to the site from PayPal - if this does not arrive then we need to check PayPal because the user may have completed payment and just closed the browser, in which case we need to send them the images but wont have had any confirmation of this!</p>"
+    message += "<p></p>"
+    message += "<p>Kind regards</p>"
+    message += "<p>Fotodelic</p>"
+
+    e = Email(sender=settings.EMAILSENDER, recipients=settings.DEVELOPERRECIPIENTS)
+    e.send('Fotodelic potential purchase', message.encode('utf8'))
+
     return bottle.template('checkout_send', items=items)
 
 
@@ -482,9 +500,14 @@ def index():
     e = Email(sender=settings.EMAILSENDER, recipients=[basket.email])
     e.send('Fotodelic purchase', message)
 
+    debugmessage = message + "<p></p>"
+    debugmessage += "<p>######################</p>"
+    debugmessage += "<p>Would have gone to: %s</p>" % basket.email
+    debugmessage += "<p>######################</p>"
+
     #copy to the site developer
-    e = Email(sender=settings.EMAILSENDER, recipients=['i.am.chrismitchell@gmail.com'])
-    e.send('Fotodelic purchase', message)
+    e = Email(sender=settings.EMAILSENDER, recipients=settings.DEVELOPERRECIPIENTS)
+    e.send('Fotodelic purchase', debugmessage)
 
     """
     Email the site owner
