@@ -11,7 +11,7 @@ from mongorm.EntityManager import EntityManager
 from Auth.auth import AuthService, User, AuthPlugin
 from Auth.apps import auth_app
 from models.Models import *
-from BottlePlugins import ForceProtocolPlugin, SessionDataPlugin
+from BottlePlugins import ForceProtocolPlugin, SessionDataPlugin, ForceWWWPlugin
 from Helpers import aes
 
 public_urls = [
@@ -28,7 +28,9 @@ public_urls = [
 
 auth_plugin = AuthPlugin(EntityManager(), exclude_routes=public_urls)
 force_http_plugin = ForceProtocolPlugin(protocol='http', environment=settings.ENVIRONMENT)
+force_www_plugin = ForceWWWPlugin(environment=settings.ENVIRONMENT)
 session_data_plugin = SessionDataPlugin(name='sc')
+
 
 def randomfilename():
    return str( random.randint(1000, 1000000) ) 
@@ -541,6 +543,7 @@ def index(*args):
 
 app = bottle.app()
 app.install(force_http_plugin)
+app.install(force_www_plugin)
 app.install(auth_plugin)
 app.install(session_data_plugin)
 #app.install(viewdata_plugin)
