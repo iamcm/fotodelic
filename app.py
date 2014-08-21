@@ -61,13 +61,14 @@ def commonViewData():
         'cats':EntityManager().find('Category', sort=[('name',1)]),
         'environment':settings.ENVIRONMENT,
         'basketcount':basketcount,
-        'url':bottle.request.url
+        'url':bottle.request.url,
     }
 
 def commonViewDataAdmin():
     return {
         'CACHEBREAKER':'1',
-        'user': EntityManager().find_one_by_id('User', bottle.request.session.user_id)
+        'user': EntityManager().find_one_by_id('User', bottle.request.session.user_id),
+        'environment':settings.ENVIRONMENT,
     }
 
 
