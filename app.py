@@ -371,7 +371,7 @@ def index():
         basket.append({
             'id': id,
             'name': name,
-            'price': 0.01,
+            'price': 10,
             })
 
     bottle.request.session_data['basket'] = basket
@@ -433,19 +433,19 @@ def index():
     items = []
     paypal_item_counter = 1
     for item in basket:
-        o = OrderLine()
-        o.item_id = item['id']
-        o.title = item['name']
-        o.quantity = bottle.request.POST.get('quantity_'+ item['id'])
-        o.price = 0.01
-        b.orderlines.append(o)
-
         if bottle.request.POST.get('quantity_'+ item['id']):
+            o = OrderLine()
+            o.item_id = item['id']
+            o.title = item['name']
+            o.quantity = bottle.request.POST.get('quantity_'+ item['id'])
+            o.price = 10 * int(o.quantity)
+            b.orderlines.append(o)
+
             items.append({
                 'counter':str(paypal_item_counter),
-                'name':item['name'],
-                'quantity':bottle.request.POST.get('quantity_'+ item['id']),
-                'cost':0.01,
+                'name':o.title,
+                'quantity':o.quantity,
+                'cost':o.price,
                 })
 
             paypal_item_counter += 1
