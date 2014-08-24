@@ -45,7 +45,7 @@
 
 
 
-        %if defined('vd'):
+        %if defined('vd') and 'environment' in vd:
           %if vd['environment'] == 'production' or vd['environment'] == 'live':
           <script>
             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

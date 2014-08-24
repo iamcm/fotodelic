@@ -6,7 +6,7 @@
     
     <link rel="shortcut icon" href="/static/favicon.png">
 
-    %if defined('vd'):
+    %if defined('vd') and 'environment' in vd:
       %if vd['environment'] != 'production' and vd['environment'] != 'live':
       <title>Fotodelic {{vd['environment']}}</title>
       %else:
@@ -84,7 +84,7 @@
         %js()
     %end
 
-    %if defined('vd'):
+    %if defined('vd') and 'environment' in vd:
       %if vd['environment'] == 'production' or vd['environment'] == 'live':
       <div id="fb-root"></div>
       <script>
