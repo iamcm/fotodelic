@@ -23,7 +23,7 @@
 
         <hr />
 
-        %if vd['image'].category.name == 'Tribal Clash':
+        %if 'Tribal' in vd['image'].category.name:
             <div class="well">
                 <div class="col-sm-12">
                     Images you see on this site are watermarked and optimised to provide a low file size and fast loading web pages. The full high quality original copies of these images are available to purchase. These will be emailed to you after payment and provide you with a permanent image file that you can print or share as many times as you like for non-commercial use.
