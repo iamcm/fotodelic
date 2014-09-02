@@ -32,22 +32,27 @@
                     <form method="post" action="/basket/add">
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="type" value="6_4" checked="checked"> 6x4in print - £6
+                                <input type="radio" name="type" value="6_4" > 6x4in print - £6
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="type" value="7_5" checked="checked"> 7x5in print - £7
+                                <input type="radio" name="type" value="7_5" > 7x5in print - £7
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="type" value="9_6" checked="checked"> 9x6in print - £8
+                                <input type="radio" name="type" value="9_6" > 9x6in print - £8
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="type" value="full" checked="checked"> Full resolution high quality original print - £10
+                                <input type="radio" name="type" value="full" checked="checked"> Digital File (3600x2400px - emailed - personal use only) - £10
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="type" value="sm" > Social Media (600x400px) - £3.50
                             </label>
                         </div>
                         <input type="hidden" name="returnTo" value="{{vd['url']}}">

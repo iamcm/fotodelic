@@ -360,10 +360,11 @@ def index():
     imagetype = bottle.request.POST.get('type')
 
     prices = {
-        '6_4':6,
-        '7_5':7,
-        '9_6':8,
-        'full':10,
+        '6_4':'6',
+        '7_5':'7',
+        '9_6':'8',
+        'full':'10',
+        'sm':'3.50',
     }
 
     price = prices.get(imagetype, 10)
@@ -448,14 +449,14 @@ def index():
             o.item_id = item['id']
             o.title = item['name']
             o.quantity = bottle.request.POST.get('quantity_'+ item['id'])
-            o.price = int(item['price']) * int(o.quantity)
+            o.price = float(item['price']) * float(o.quantity)
             b.orderlines.append(o)
 
             items.append({
                 'counter':str(paypal_item_counter),
                 'name':o.title,
                 'quantity':o.quantity,
-                'cost':o.price,
+                'cost':"%0.2f" % o.price,
                 })
 
             paypal_item_counter += 1
