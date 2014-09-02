@@ -28,11 +28,28 @@
                 <div class="col-sm-12">
                     Images you see on this site are watermarked and optimised to provide a low file size and fast loading web pages. The full high quality original copies of these images are available to purchase. These will be emailed to you after payment and provide you with a permanent image file that you can print or share as many times as you like for non-commercial use.
                 </div>
-                <div class="col-sm-3">
-                    <input type="radio" disabled="disabled" checked="checked"> Full quality original print - £10
-                </div>
-                <div class="col-sm-3">
+                <div class="col-sm-12">
                     <form method="post" action="/basket/add">
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="type" value="6_4" checked="checked"> 6x4in print - £6
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="type" value="7_5" checked="checked"> 7x5in print - £7
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="type" value="9_6" checked="checked"> 9x6in print - £8
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="radio" name="type" value="full" checked="checked"> Full resolution high quality original print - £10
+                            </label>
+                        </div>
                         <input type="hidden" name="returnTo" value="{{vd['url']}}">
                         <input type="hidden" name="id" value="{{vd['image']._id}}">
                         <input type="hidden" name="name" value="{{vd['image'].nicename}}">

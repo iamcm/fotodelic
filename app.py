@@ -357,6 +357,16 @@ def index():
     id = bottle.request.POST.get('id')
     name = bottle.request.POST.get('name')
     returnTo = bottle.request.POST.get('returnTo')
+    imagetype = bottle.request.POST.get('type')
+
+    prices = {
+        '6_4':6,
+        '7_5':7,
+        '9_6':8,
+        'full':10,
+    }
+
+    price = prices.get(imagetype, 10)
 
     basket = bottle.request.session_data.get('basket')
     if basket is None:
@@ -371,7 +381,7 @@ def index():
         basket.append({
             'id': id,
             'name': name,
-            'price': 10,
+            'price': price,
             })
 
     bottle.request.session_data['basket'] = basket
@@ -438,7 +448,7 @@ def index():
             o.item_id = item['id']
             o.title = item['name']
             o.quantity = bottle.request.POST.get('quantity_'+ item['id'])
-            o.price = 10 * int(o.quantity)
+            o.price = int(item['price']) * int(o.quantity)
             b.orderlines.append(o)
 
             items.append({
