@@ -56,9 +56,16 @@ def commonViewData():
         basketcount = len(bottle.request.session_data['basket'])
     else:
         basketcount = 0
+
+    _cats = EntityManager().find('Category', sort=[('name',1)])
+    cats = []
+    for c in _cats:
+        if 'tribal' not in c.name.lower():
+            cats.append(c)
+
     return {
         'CACHEBREAKER':'1',
-        'cats':EntityManager().find('Category', sort=[('name',1)]),
+        'cats':cats,
         'environment':settings.ENVIRONMENT,
         'basketcount':basketcount,
         'url':bottle.request.url,
