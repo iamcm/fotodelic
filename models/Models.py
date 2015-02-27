@@ -7,9 +7,10 @@ class Category(BaseModel):
         self.name = None
         self.slug = None
         self.description = None
+        self.payment_scheme_id = None
         self.added = datetime.datetime.now()
 
-    def _presave(self, entitManager):
+    def _presave(self, entityManager):
         self.slug = self.name.lower().replace(' ','-')
 
 
@@ -44,6 +45,20 @@ class OrderLine(BaseModel):
         self.item_id = None
         self.title = None
         self.quantity = 1
+        self.price = None
+        self.added = datetime.datetime.now()
+
+
+class PaymentScheme(BaseModel):
+    def __init__(self):
+        self.name = None
+        self.added = datetime.datetime.now()
+
+
+class PaymentOption(BaseModel):
+    def __init__(self):
+        self.scheme_id = None
+        self.name = None
         self.price = None
         self.added = datetime.datetime.now()
 

@@ -142,8 +142,12 @@ def index(slug, imageId):
         i += 1
 
 
-    if image == None:
+    if image is None:
         return bottle.HTTPError(404)
+
+    payment_options = []
+    if cat.payment_scheme_id is not None and cat.payment_scheme_id != '':
+        payment_options = EntityManager().find('PaymentOption', {'scheme_id':str(cat.payment_scheme_id)})
 
     viewdata = commonViewData()
     viewdata.update({
@@ -151,6 +155,7 @@ def index(slug, imageId):
             'slug':slug,
             'previous':previous,
             'next':next,
+            'payment_options':payment_options,
             'comments_url': settings.BASEURL + bottle.request.urlparts.path,
         })
 
@@ -181,6 +186,7 @@ def index():
 @bottle.route('/admin/category', method='GET')
 def index():
     viewdata = commonViewDataAdmin()
+    viewdata['schemes'] = EntityManager().find('PaymentScheme')
 
     return bottle.template('admin_category', vd=viewdata)
 
@@ -189,6 +195,7 @@ def index():
 @bottle.route('/admin/category/:id/edit', method='GET')
 def index(id):
     viewdata = commonViewDataAdmin()
+    viewdata['schemes'] = EntityManager().find('PaymentScheme')
     viewdata['cat'] = EntityManager().find_one_by_id('Category', id)
 
     return bottle.template('admin_category', vd=viewdata)
@@ -205,17 +212,20 @@ def index(id):
 
 @bottle.route('/admin/category', method='POST')
 def index():
-
     n = bottle.request.POST.name
     d = bottle.request.POST.description
+    s = bottle.request.POST.scheme
 
     if n:
         if bottle.request.POST.get('id'):
             cat = EntityManager().find_one_by_id('Category', bottle.request.POST.id)
         else:
             cat = Category()
+
         cat.name = n
         cat.description = d
+        cat.payment_scheme_id = s
+
         EntityManager().save('Category', cat)
 
         return bottle.redirect('/admin/categories')
@@ -358,23 +368,91 @@ def index(id):
     return bottle.redirect('/admin/images')
 
 
+### payment options
+@bottle.route('/admin/paymentschemes', method='GET')
+def index():
+    viewdata = commonViewDataAdmin()
+
+    viewdata['schemes'] = EntityManager().find('PaymentScheme')
+
+    for s in viewdata['schemes']:
+        s.options = EntityManager().find('PaymentOption', objfilter={'scheme_id':s._id})
+
+    return bottle.template('admin_paymentschemes', vd=viewdata)
+
+
+
+@bottle.route('/admin/paymentscheme', method='GET')
+def index():
+    viewdata = commonViewDataAdmin()
+
+    return bottle.template('admin_paymentscheme', vd=viewdata)
+
+
+
+@bottle.route('/admin/paymentscheme/:id/edit', method='GET')
+def index(id):
+    viewdata = commonViewDataAdmin()
+    viewdata['scheme'] = EntityManager().find_one_by_id('PaymentScheme', id)
+    s['options'] = EntityManager().find('PaymentOption', objfilter={'scheme_id':viewdata['scheme']._id})
+
+    return bottle.template('admin_paymentscheme', vd=viewdata)
+
+
+
+@bottle.route('/admin/paymentscheme/:id/delete', method='GET')
+def index(id):
+    EntityManager().remove_one('PaymentScheme', id)
+
+    return bottle.redirect('/admin/paymentschemes')
+
+
+
+@bottle.route('/admin/paymentscheme', method='POST')
+def index():
+    n = bottle.request.POST.name
+
+    if n:
+        if bottle.request.POST.get('id'):
+            scheme = EntityManager().find_one_by_id('PaymentScheme', bottle.request.POST.id)
+        else:
+            scheme = PaymentScheme()
+
+        scheme.name = n
+
+        s = EntityManager().save('PaymentScheme', scheme)
+
+        for opt in bottle.request.POST.getall('option[]'):
+            optname = opt.split(':::')[0]
+            optprice = opt.split(':::')[1]
+            o = PaymentOption()
+            o.scheme_id = str(s._id)
+            o.name = optname
+            o.price = optprice
+
+            EntityManager().save('PaymentOption', o)
+
+        return bottle.redirect('/admin/paymentschemes')
+
+    else:
+        viewdata = commonViewDataAdmin()
+        viewdata['error'] = 'Required data is missing'
+
+        return bottle.template('admin_paymentscheme', vd=viewdata)
+###
+
 
 @bottle.route('/basket/add', method='POST')
 def index():
     id = bottle.request.POST.get('id')
     name = bottle.request.POST.get('name')
     returnTo = bottle.request.POST.get('returnTo')
-    imagetype = bottle.request.POST.get('type')
+    payment_option = EntityManager().find_one_by_id('PaymentOption', bottle.request.POST.get('option', ''))
 
-    prices = {
-        '6_4':'6',
-        '7_5':'7',
-        '9_6':'8',
-        'full':'10',
-        'sm':'3.50',
-    }
+    if payment_option is None:
+        return bottle.HTTPError(400)
 
-    price = prices.get(imagetype, 10)
+    price = payment_option.price
 
     basket = bottle.request.session_data.get('basket')
     if basket is None:
@@ -558,6 +636,7 @@ def index():
     viewdata = commonViewData()
 
     return bottle.template('checkout_success', vd=viewdata)
+
 
 
 

@@ -27,6 +27,18 @@
                 <textarea class="input-xlarge" name="description" id="description">{{vd['cat'].description if vd.get('cat') and vd['cat'].description else ''}}</textarea>
             </div>
         </div>
+
+        <div class="control-group">
+            <label class="control-label" for="scheme">Payment Scheme</label>
+            <div class="controls">
+                <select name="scheme">
+                    <option value="">No payment scheme</option>
+                    %for s in vd['schemes']:
+                    <option value="{{s._id}}" {{"selected" if str(s._id) == str(vd['cat'].payment_scheme_id) else ''}}>{{s.name}}</option>
+                    %end
+                </select>
+            </div>
+        </div>
         
         <div class="control-group">
             <div class="controls">

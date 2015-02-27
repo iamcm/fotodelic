@@ -23,38 +23,20 @@
 
         <hr />
 
-        %if 'Tribal' in vd['image'].category.name:
+        %if vd['image'].category.payment_scheme_id is not None and vd['image'].category.payment_scheme_id != '':
             <div class="well">
                 <div class="col-sm-12">
                     Images you see on this site are watermarked and optimised to provide a low file size and fast loading web pages. The full high quality original copies of these images are available to purchase. These will be emailed to you after payment and provide you with a permanent image file that you can print or share as many times as you like for non-commercial use.
                 </div>
                 <div class="col-sm-12">
                     <form method="post" action="/basket/add">
+                        %for o in vd['payment_options']:
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="type" value="6_4" > 6x4in print - £6
+                                <input type="radio" name="option" value="{{o._id}}" > {{o.name}} - £{{o.price}}
                             </label>
                         </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="radio" name="type" value="7_5" > 7x5in print - £7
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="radio" name="type" value="9_6" > 9x6in print - £8
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="radio" name="type" value="full" checked="checked"> Digital File (3600x2400px - emailed - personal use only) - £10
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label>
-                                <input type="radio" name="type" value="sm" > Social Media (600x400px) - £3.50
-                            </label>
-                        </div>
+                        %end
                         <input type="hidden" name="returnTo" value="{{vd['url']}}">
                         <input type="hidden" name="id" value="{{vd['image']._id}}">
                         <input type="hidden" name="name" value="{{vd['image'].nicename}}">
