@@ -34,7 +34,7 @@
                 <select name="scheme">
                     <option value="">No payment scheme</option>
                     %for s in vd['schemes']:
-                    <option value="{{s._id}}" {{"selected" if str(s._id) == str(vd['cat'].payment_scheme_id) else ''}}>{{s.name}}</option>
+                    <option value="{{s._id}}" {{"selected" if vd.get('cat') and vd['cat'].payment_scheme_id and str(s._id) == str(vd['cat'].payment_scheme_id) else ''}}>{{s.name}}</option>
                     %end
                 </select>
             </div>
