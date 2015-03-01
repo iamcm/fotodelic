@@ -402,6 +402,13 @@ def index(id):
 @bottle.route('/admin/paymentscheme/:id/delete', method='GET')
 def index(id):
     EntityManager().remove_one('PaymentScheme', id)
+    
+    for o in EntityManager().find('PaymentOption', objfilter={'scheme_id':id}):
+        EntityManager().remove_one('PaymentOption', str(o._id))
+    
+    for c in EntityManager().find('Category', objfilter={'payment_scheme_id':id}):
+        c.payment_scheme_id = None
+        EntityManager().save('Category', c)
 
     return bottle.redirect('/admin/paymentschemes')
 
