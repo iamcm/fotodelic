@@ -394,8 +394,7 @@ def index():
 def index(id):
     viewdata = commonViewDataAdmin()
     viewdata['scheme'] = EntityManager().find_one_by_id('PaymentScheme', id)
-    s['options'] = EntityManager().find('PaymentOption', objfilter={'scheme_id':viewdata['scheme']._id})
-
+    viewdata['scheme_options'] = EntityManager().find('PaymentOption', objfilter={'scheme_id':str(viewdata['scheme']._id)})
     return bottle.template('admin_paymentscheme', vd=viewdata)
 
 
@@ -413,24 +412,38 @@ def index():
     n = bottle.request.POST.name
 
     if n:
+        processed_ids = []
+
         if bottle.request.POST.get('id'):
             scheme = EntityManager().find_one_by_id('PaymentScheme', bottle.request.POST.id)
+            existing_options_ids = [str(o._id) for o in EntityManager().find('PaymentOption', objfilter={'scheme_id':str(scheme._id)})]
         else:
             scheme = PaymentScheme()
+            existing_options_ids = []
 
         scheme.name = n
 
         s = EntityManager().save('PaymentScheme', scheme)
 
         for opt in bottle.request.POST.getall('option[]'):
-            optname = opt.split(':::')[0]
-            optprice = opt.split(':::')[1]
-            o = PaymentOption()
-            o.scheme_id = str(s._id)
-            o.name = optname
-            o.price = optprice
+            optid = opt.split(':::')[0]
+            optname = opt.split(':::')[1]
+            optprice = opt.split(':::')[2]
 
-            EntityManager().save('PaymentOption', o)
+            if optid not in existing_options_ids:
+                o = PaymentOption()
+                o.scheme_id = str(s._id)
+                o.name = optname
+                o.price = optprice
+
+                EntityManager().save('PaymentOption', o)
+
+            processed_ids.append(optid)
+
+
+        #remove any existing payment options that havent been posted (because it means they were removed by the user)
+        for id in set(existing_options_ids).difference(set(processed_ids)):
+            EntityManager().remove_one('PaymentOption', id)
 
         return bottle.redirect('/admin/paymentschemes')
 

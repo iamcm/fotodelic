@@ -36,6 +36,11 @@
                     <a class="btn btn-info" id="add-option">Add</a>
                 </div>
                 <div id="options">
+                %if vd.get('scheme_options'):
+                    %for o in vd['scheme_options']:
+                    <p><a onclick="$(this).parent().remove()" class="btn btn-default btn-xs">x</a><input name="option[]" value="{{o._id}}::::::" type="hidden" /> {{o.name}} - £{{o.price}}</p>
+                    %end
+                %end
                 </div>
             </div>
         </div>
@@ -61,7 +66,7 @@
 
             if(text != '' && parseFloat(amount) > 0){
                 amount = parseFloat(amount);
-                $('#options').append('<p><a onclick="$(this).parent().remove()" class="btn btn-default btn-xs">x</a><input name="option[]" value="'+text+':::'+amount+'" type="hidden" /> '+ text +' - £'+ amount +'</p>');
+                $('#options').append('<p><a onclick="$(this).parent().remove()" class="btn btn-default btn-xs">x</a><input name="option[]" value="0:::'+text+':::'+amount+'" type="hidden" /> '+ text +' - £'+ amount +'</p>');
             } else {
                 alert('Invalid name or amount');
             }

@@ -14,6 +14,8 @@
 	<tr class="row">
 		<td class="col1">{{s.name}}</td>
 		<td class="col2">
+			<a href="/admin/paymentscheme/{{s._id}}/edit">Edit</a>
+			|
 			<a href="/admin/paymentscheme/{{s._id}}/delete">Delete</a>
 		</td>
 	</tr>
