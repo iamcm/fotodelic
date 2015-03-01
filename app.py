@@ -300,15 +300,15 @@ def index():
 
     filter_criteria = {}
     
-    if bottle.request.GET.get('category') and bottle.request.GET.get('category') != 'all':
-        if bottle.request.GET.get('category') == 'homepagepics':
-            filter_criteria = {'isHomepagePic':True}
-        else:
-            filter_criteria = {'category.slug':bottle.request.GET.get('category')}
+    if bottle.request.GET.get('category') is None or bottle.request.GET.get('category') == 'homepagepics':
+        filter_criteria = {'isHomepagePic':True}
+    else:
+        filter_criteria = {'category.slug':bottle.request.GET.get('category')}
 
     images = EntityManager().find('Image', objfilter=filter_criteria, sort=[('added', -1)])
 
     viewdata['images'] = images
+    viewdata['category'] = bottle.request.GET.get('category', 'homepagepics')
 
     return bottle.template('admin_images', vd=viewdata)
 
@@ -366,6 +366,29 @@ def index(id):
 
 
     return bottle.redirect('/admin/images')
+
+
+
+@bottle.route('/admin/image/bulkdelete', method='POST')
+def index():
+    ids = bottle.request.POST.getall('imageId')
+
+    for id in ids:
+        i = EntityManager().find_one_by_id('Image', id)
+
+        path = os.path.join(settings.ROOTPATH, 'static', i.filepath)
+
+        if os.path.isfile(path):
+            os.remove(path)
+
+            if os.path.isfile(path.replace('uploads/','uploads/thumbs/')):
+                os.remove(path.replace('uploads/','uploads/thumbs/'))
+
+        EntityManager().remove_one('Image', i._id)
+
+
+    return bottle.redirect('/admin/images?category='+ bottle.request.POST.get('category','homepagepics'))
+
 
 
 ### payment options

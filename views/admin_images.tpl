@@ -12,10 +12,9 @@
 
 	<label for="id_category" id="id_category_label">Filter for:</label>
 	<select name="category" id="id_category">
-		<option value="all" selected="selected">All</option>
-			<option value="homepagepics">Homepage Pics</option>
+			<option value="homepagepics" {{'selected' if vd['category']=='homepagepics' else ''}}>Homepage Pics</option>
 		%for c in vd['cats']:
-			<option value="{{c.slug}}">{{c.name}}</option>
+			<option value="{{c.slug}}" {{'selected' if vd['category']==c.slug else ''}}>{{c.name}}</option>
 		%end
 	</select>
 
@@ -24,6 +23,8 @@
 
 <div id="imagelistcontainer" class="imagelist tablelist">
 		
+	<form action="/admin/image/bulkdelete" method="post">
+		<input type="hidden" name="category" value="{{vd['category']}}" />	
 	%for i in vd['images']:
 		<div class="row-fluid my5">
 			<div class="span4">
@@ -42,12 +43,39 @@
 					<a style="cursor:pointer" data-href="/admin/image/{{i._id}}/toggle-homepage/" onclick="toggleHompagePic(this)">Set as homepage pic</a>
 					%end
 					|
-					<a href="/admin/image/{{i._id}}/delete" onclick="return confirm('Are you sure you want to permanently delete this image?')">Delete</a>
+					<input value="{{i._id}}" name="imageId" type="checkbox" />
 				</span>
 			</div>
 		</div>
 	%end
-
+		<div class="well" style="display:none;">
+			<input id="bulk-delete-btn" type="submit" value="Bulk Delete images" />	
+		</div>
+	</form>
 </div>
 
-%rebase base_admin vd=vd
+%def js():
+	<script type="text/javascript">
+		$('input[type="checkbox"]').on('change', function(){
+			var checkedItems = 0;
+			$('input[type="checkbox"]').each(function(){ 
+				if($(this).is(':checked')){
+					checkedItems += 1;
+				}
+
+				var txt = 'Bulk Delete '+ checkedItems +' Image';
+				if(checkedItems > 1){
+					txt += 's';
+				}
+
+				$('#bulk-delete-btn').attr('value', txt).parent().show();
+			});
+
+			if(checkedItems == 0){
+				$('#bulk-delete-btn').parent().hide();
+			}
+		})
+	</script>
+%end
+
+%rebase base_admin vd=vd, js=js
