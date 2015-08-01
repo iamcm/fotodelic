@@ -1,7 +1,7 @@
-from pymongo import Connection
+from pymongo import MongoClient
 import settings
 
-conn = Connection(settings.DBHOST, settings.DBPORT)
+conn = MongoClient(settings.DBHOST, settings.DBPORT)
 
 _DBCON = eval('conn.'+ settings.DBNAME)
 
